@@ -1,0 +1,83 @@
+body {
+    font-family: Arial;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 18px;
+}
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+}
+#copy-button {
+    padding: 15px 30px;
+    font-size: 20px;
+    display: none;
+}
+.team-container {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    margin: 10px 0;
+}
+.team {
+    margin: 10px;
+    width: 25%;
+    background-color: #f0f0f0;
+    padding: 10px;
+    border: 2px solid black;
+    border-radius: 4px;
+    display: none;
+}
+.team h2 {
+    margin: 0;
+    text-align: center;
+}
+.player-item {
+    display: flex;
+    align-items: center;
+    margin: 2px 0;
+}
+.player-id {
+    width: 20.04px;
+    text-align: right;
+    margin: 0 8px 0 8px;
+}
+#command-output {
+    margin-top: 20px;
+    font-size: 20px;
+    text-align: center;
+    padding: 8px;
+    border: none;
+    background: none;
+    outline: none;
+    display: none;
+    width: 100%;
+}
+#file-zone {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px dashed #007bff;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    font-size: 24px;
+    width: 15vw;
+    height: 15vh;
+}
+#room-link {
+    margin-top: 20px;
+    color: blue;
+    text-decoration: underline;
+    display: none;
+}
+#error-message {
+    display: none;
+    text-align: center;
+    color: red;
+    margin: 20px;
+    border: 1px solid red;
+    padding: 10px;
+    border-radius: 5px;
+}

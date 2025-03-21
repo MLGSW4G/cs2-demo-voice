@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>cs2-demo-voice</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <h1 id="title">cs2-demo-voice</h1>
+        <div id="file-zone">Upload a .dem file</div>
+        <input type="file" id="file-input" accept=".dem" style="display: none" />
+        <a id="room-link" href="#" target="_blank" style="display: none">Open Room</a>
+        <div class="team-container">
+            <div class="team" id="team1"><h2>Team 1</h2></div>
+            <div class="team" id="team2"><h2>Team 2</h2></div>
+        </div>
+        <div id="error-message"></div>
+        <input type="text" id="command-output" value="tv_listen_voice_indices 0" readonly />
+        <button id="copy-button">Copy Command</button>
+        <script>
+            document.getElementById("file-zone").onclick = () => document.getElementById("file-input").click();
+            document.getElementById("file-input").addEventListener("change", async (event) => {
+                const formData = new FormData();
+                const file = event.target.files[0];
+                formData.append("demFile", file);
+                const filename = file.name.slice(0, -8);
+                const roomLink = `https://www.faceit.com/en/cs2/room/${filename}`;
+                const roomLinkElement = document.getElementById("room-link");
+                roomLinkElement.href = roomLink;
+                roomLinkElement.style.display = "block";
+
+                try {
+                    const response = await fetch("/upload", { method: "POST", body: formData });
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+                    const result = await response.json();
+                    const team1Div = document.getElementById("team1");
+                    const team2Div = document.getElementById("team2");
+                    team1Div.innerHTML = "<h2>Team 1</h2>";
+                    team2Div.innerHTML = "<h2>Team 2</h2>";
+                    document.getElementById("error-message").style.display = "none";
+
+                    if (result.success) {
+                        team1Div.style.display = "block";
+                        team2Div.style.display = "block";
+                        result.players.forEach((player, index) => {
+                            const playerDiv = document.createElement("div");
+                            playerDiv.className = "player-item";
+                            playerDiv.innerHTML = `
+                            <input type="checkbox" data-player-id="${index + 4}" />
+                            <div class="player-id">${index + 4}</div>
+                            <a href="https://faceit.com/en/players/${player.name}" target="_blank">${player.name}</a>
+                        `;
+                            (player.team_number === 2 ? team1Div : team2Div).appendChild(playerDiv);
+                        });
+                        document.getElementById("command-output").style.display = "block";
+                        document.getElementById("copy-button").style.display = "block";
+                        updateCommandOutput();
+                    } else {
+                        showError(result.message);
+                    }
+                } catch (error) {
+                    console.error("Error uploading file:", error);
+                    showError(error.message);
+                }
+            });
+
+            function showError(message) {
+                const errorMessageDiv = document.getElementById("error-message");
+                errorMessageDiv.innerHTML = `<h2>Error</h2>${message}`;
+                errorMessageDiv.style.display = "block";
+            }
+
+            document.addEventListener("change", updateCommandOutput);
+            function updateCommandOutput() {
+                const decimalValue = Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).reduce((sum, checkbox) => sum + Math.pow(2, parseInt(checkbox.dataset.playerId) - 1), 0);
+                document.getElementById("command-output").value = `tv_listen_voice_indices ${decimalValue}`;
+            }
+            document.getElementById(" copy-button").onclick = () => {
+                const commandOutput = document.getElementById("command-output");
+                commandOutput.select();
+                document.execCommand("copy");
+                console.log("Copied to clipboard: " + commandOutput.value);
+            };
+        </script>
+    </body>
+</html>
