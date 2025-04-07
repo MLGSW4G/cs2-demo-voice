@@ -77,11 +77,11 @@
                 const decimalValue = Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).reduce((sum, checkbox) => sum + Math.pow(2, parseInt(checkbox.dataset.playerId) - 1), 0);
                 document.getElementById("command-output").value = `tv_listen_voice_indices ${decimalValue}`;
             }
-            document.getElementById(" copy-button").onclick = () => {
-                const commandOutput = document.getElementById("command-output");
-                commandOutput.select();
-                document.execCommand("copy");
-                console.log("Copied to clipboard: " + commandOutput.value);
+
+            document.getElementById("copy-button").onclick = () => {
+            const commandOutput = document.getElementById("command-output");
+                navigator.clipboard.writeText(commandOutput.value);
+                console.log(`Copied to clipboard: ${commandOutput.value}`);
             };
         </script>
     </body>
